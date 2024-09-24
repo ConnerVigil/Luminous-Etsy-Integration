@@ -108,7 +108,7 @@ class EtsyAppIntegrationAcountService implements OMSAppIntegrationAccountInterfa
     public function testCredentials(BaseConfigData $configData): bool
     {
         if (!($configData instanceof EtsyConfig)) {
-            throw new InvalidConfigurationException('Config data is not an instance of MiraklConfig');
+            throw new InvalidConfigurationException('Config data is not an instance of EtsyConfig');
         }
 
         try {

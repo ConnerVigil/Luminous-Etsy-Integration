@@ -29,6 +29,14 @@ class EtsyProductStockService implements OMSProductStockInterface
         $this->etsyClient = new EtsyClient($config);
     }
 
+
+    public function getOffer($offerId)
+    {
+        $endpoint = '/api/offers/' . $offerId;
+
+        return $this->etsyClient->get($endpoint);
+    }
+
     /**
      * @inheritDoc
      * @throws InvalidConfigurationException
@@ -43,7 +51,7 @@ class EtsyProductStockService implements OMSProductStockInterface
         $payload = [];
 
         return [
-            'message' => 'Stocks successfully pushed to Mirakl.',
+            'message' => 'Stocks successfully pushed to Etsy.',
             'responseData' => $response,
             'payload' => $payload
         ];

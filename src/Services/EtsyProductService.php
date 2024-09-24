@@ -77,7 +77,7 @@ class EtsyProductService implements OMSProductInterface
 
             return EtsyApiResponseMapper::mapProductsToProductDataCollection($allProducts);
         } catch (GuzzleException $e) {
-            Logger::error('Mirakl getPaginatedProducts', ['errorMessage' => $e->getMessage()]);
+            Logger::error('Etsy getPaginatedProducts', ['errorMessage' => $e->getMessage()]);
             ExceptionHelper::throwExceptionFromStatusCode($e->getCode() ?? 0);
         }
     }

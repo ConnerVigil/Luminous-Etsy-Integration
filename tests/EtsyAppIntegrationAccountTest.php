@@ -1,40 +1,41 @@
 <?php
 
-namespace JoinLuminous\MiraklOms\Tests;
+namespace JoinLuminous\EtsyOms\Tests;
 
-use JoinLuminous\MiraklOms\Services\MiraklAppIntegrationAccountService;
-use JoinLuminous\MiraklOms\Config\MiraklConfig;
+use JoinLuminous\EtsyOms\config\EtsyConfig;
+use JoinLuminous\EtsyOms\Services\EtsyAppIntegrationAcountService;
 use JoinLuminous\OmsContracts\Data\BaseConfigData;
 use JoinLuminous\OmsContracts\Exceptions\InvalidConfigurationException;
 use PHPUnit\Framework\TestCase;
 
-class MiraklAppIntegrationAccountTest extends TestCase
+class EtsyAppIntegrationAccountTest extends TestCase
 {
 
     public function testGetAuthType()
     {
-        $service = new MiraklAppIntegrationAccountService();
-        $this->assertEquals('API_KEYS', $service->getAuthType());
+        $service = new EtsyAppIntegrationAcountService();
+        $this->assertEquals('BASIC_AUTH', $service->getAuthType());
     }
 
     public function testCreateConfig()
     {
-        $service = new MiraklAppIntegrationAccountService();
+        $service = new EtsyAppIntegrationAcountService();
         $credentials = [
             'shop_key' => 'test_shop_key',
             'base_url' => 'test_base_url',
         ];
 
+        /** @var EtsyConfig $config */
         $config = $service->createConfig($credentials);
 
-        $this->assertInstanceOf(MiraklConfig::class, $config);
-        $this->assertEquals('test_shop_key', $config->shopKey);
+        $this->assertInstanceOf(EtsyConfig::class, $config);
+        $this->assertEquals('test_shop_key', $config->keyString);
         $this->assertEquals('test_base_url', $config->baseUrl);
     }
 
     public function testGetRules()
     {
-        $service = new MiraklAppIntegrationAccountService();
+        $service = new EtsyAppIntegrationAcountService();
         $rules = $service->getRules();
 
         $expectedRules = [
@@ -48,16 +49,13 @@ class MiraklAppIntegrationAccountTest extends TestCase
     public function testTestCredentials()
     {
         $configData = [
-            'shop_key' => 'be0da337-65ee-4dc0-908d-8d4dacbe5c14',
-            'base_url' => 'https://macysus-prod.mirakl.net',
+            'shop_key' => '', // TODO: add correct shop key
+            'base_url' => '', // TODO: add correct base url
         ];
 
-        $service = new MiraklAppIntegrationAccountService();
-
+        $service = new EtsyAppIntegrationAcountService();
         $config = $service->createConfig($configData);
-
         $result = $service->testCredentials($config);
-
         $this->assertTrue($result);
     }
 
@@ -65,7 +63,7 @@ class MiraklAppIntegrationAccountTest extends TestCase
     {
         $this->expectException(InvalidConfigurationException::class);
 
-        $service = new MiraklAppIntegrationAccountService();
+        $service = new EtsyAppIntegrationAcountService();
         $invalidConfigData = $this->createMock(BaseConfigData::class);
 
         $service->testCredentials($invalidConfigData);
@@ -73,19 +71,19 @@ class MiraklAppIntegrationAccountTest extends TestCase
 
     public function testGetIntegrationAccountApp()
     {
-        $service = new MiraklAppIntegrationAccountService();
-        $this->assertEquals('mirakl', $service->getIntegrationAccountApp());
+        $service = new EtsyAppIntegrationAcountService();
+        $this->assertEquals('etsy', $service->getIntegrationAccountApp());
     }
 
     public function testGetIntegrationType()
     {
-        $service = new MiraklAppIntegrationAccountService();
+        $service = new EtsyAppIntegrationAcountService();
         $this->assertEquals('basic_auth', $service->getIntegrationType());
     }
 
     public function testGetFields()
     {
-        $service = new MiraklAppIntegrationAccountService();
+        $service = new EtsyAppIntegrationAcountService();
         $fields = $service->getFields();
 
         $expectedFields = [
@@ -115,7 +113,7 @@ class MiraklAppIntegrationAccountTest extends TestCase
 
     public function testGetActions()
     {
-        $service = new MiraklAppIntegrationAccountService();
+        $service = new EtsyAppIntegrationAcountService();
         $actions = $service->getActions();
 
         $expectedActions = [];
@@ -125,8 +123,7 @@ class MiraklAppIntegrationAccountTest extends TestCase
 
     public function testGetScriptUrl()
     {
-        $service = new MiraklAppIntegrationAccountService();
+        $service = new EtsyAppIntegrationAcountService();
         $this->assertEquals('', $service->getScriptUrl());
     }
-
 }

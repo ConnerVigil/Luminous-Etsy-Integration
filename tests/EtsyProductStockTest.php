@@ -1,21 +1,21 @@
 <?php
 
+namespace JoinLuminous\EtsyOms\Tests;
 
-namespace JoinLuminous\MiraklOms\Tests;
-
-use JoinLuminous\MiraklOms\Services\MiraklProductStockService;
+use JoinLuminous\EtsyOms\Services\EtsyProductStockService;
 use JoinLuminous\OmsContracts\Data\AppIntegrationAccountData;
+use JoinLuminous\OmsContracts\Data\ProductStockDataCollection;
 use PHPUnit\Framework\TestCase;
 
-class MiraklProductStockTest extends TestCase
+class EtsyProductStockTest extends TestCase
 {
-
     public function testPushStock()
     {
         $configData = [
-            'shopKey' => 'be0da337-65ee-4dc0-908d-8d4dacbe5c14',
-            'baseUrl' => 'https://macysus-prod.mirakl.net',
+            'shopKey' => '', // TODO: add correct shop key
+            'baseUrl' => '', // TODO: add correct base url
         ];
+
         $appIntegrationAccountData = new AppIntegrationAccountData([
             'id' => 'test',
             'label' => 'test',
@@ -24,9 +24,9 @@ class MiraklProductStockTest extends TestCase
             'credentials' => $configData
         ]);
 
-        $miraklProductStockService = new miraklProductStockService($appIntegrationAccountData);
+        $etsyProductStockService = new EtsyProductStockService($appIntegrationAccountData);
 
-        $offer = $miraklProductStockService->getOffer('22251880');
+        $offer = $etsyProductStockService->getOffer('22251880');
 
         $productStockData = [
             'inventoryItemId' => '22251880',
@@ -37,11 +37,11 @@ class MiraklProductStockTest extends TestCase
         $productStockCollection = new ProductStockDataCollection(productStocks: [$productStockData]);
 
         try {
-            $result = $miraklProductStockService->pushStock($productStockCollection);
+            $result = $etsyProductStockService->pushStock($productStockCollection);
 
             $this->assertIsArray($result);
             $this->assertArrayHasKey('message', $result);
-            $this->assertEquals('Stocks successfully pushed to Mirakl.', $result['message']);
+            $this->assertEquals('Stocks successfully pushed to Etsy.', $result['message']);
             // Add additional assertions based on the expected structure of the response data
         } catch (\Exception $e) {
             $this->fail('Exception thrown: ' . $e->getMessage());
@@ -55,7 +55,7 @@ class MiraklProductStockTest extends TestCase
         $productStockData = (object) $productStockData;
         $productStockCollection = new ProductStockDataCollection(productStocks: [$productStockData]);
 
-        $miraklProductStockService->pushStock($productStockCollection);
+        $etsyProductStockService->pushStock($productStockCollection);
     }
 
 
@@ -63,5 +63,4 @@ class MiraklProductStockTest extends TestCase
     {
         // Clean up resources or reset states if needed
     }
-
 }
