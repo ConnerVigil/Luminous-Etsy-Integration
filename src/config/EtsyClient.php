@@ -21,7 +21,7 @@ class EtsyClient
 
     public function __construct(EtsyConfig $config)
     {
-        $this->client = new Client(); // Configure whatever is needed to use call the etsy api
+        $this->client = new Client(); // TODO: Configure whatever is needed to use call the etsy api
     }
 
     /**

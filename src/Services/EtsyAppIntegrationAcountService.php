@@ -2,12 +2,16 @@
 
 namespace JoinLuminous\EtsyOms\Services;
 
+use Exception;
+use JoinLuminous\EtsyOms\config\EtsyClient;
 use JoinLuminous\EtsyOms\config\EtsyConfig;
+use JoinLuminous\OmsContracts\Exceptions\InvalidConfigurationException;
 use JoinLuminous\OmsContracts\Interfaces\OMSAppIntegrationAccountInterface;
 use JoinLuminous\OmsContracts\Constants\IntegrationTypeConstant;
 use JoinLuminous\OmsContracts\Data\BaseConfigData;
 use JoinLuminous\OmsContracts\Data\Config\FieldConfigData;
 use JoinLuminous\OmsContracts\Constants\FormElementConstant;
+
 
 class EtsyAppIntegrationAcountService implements OMSAppIntegrationAccountInterface
 {
@@ -50,9 +54,8 @@ class EtsyAppIntegrationAcountService implements OMSAppIntegrationAccountInterfa
     {
         return [
             'credentials' => [
-                'keyString' => 'required|string',
-                'callbackUrl' => 'required|string',
-                'stateString' => 'required|string',
+                'shop_key' => 'required|string',
+                'base_url' => 'required|string',
             ],
             'settings' => [
                 'get_products' => 'boolean'
@@ -67,21 +70,15 @@ class EtsyAppIntegrationAcountService implements OMSAppIntegrationAccountInterfa
     {
         return [
             'credentials' => [
-                'keyString' => new FieldConfigData(
+                'shop_key' => new FieldConfigData(
                     type: FormElementConstant::INPUT_TEXT,
-                    label: 'Key String',
+                    label: 'Shop Key',
                     values: [],
                     attributes: []
                 ),
-                'callbackUrl' => new FieldConfigData(
+                'base_url' => new FieldConfigData(
                     type: FormElementConstant::INPUT_TEXT,
-                    label: 'Callback URL',
-                    values: [],
-                    attributes: []
-                ),
-                'stateString' => new FieldConfigData(
-                    type: FormElementConstant::INPUT_TEXT,
-                    label: 'State String',
+                    label: 'Base URL',
                     values: [],
                     attributes: []
                 )
@@ -110,7 +107,18 @@ class EtsyAppIntegrationAcountService implements OMSAppIntegrationAccountInterfa
      */
     public function testCredentials(BaseConfigData $configData): bool
     {
-        return true;
+        if (!($configData instanceof EtsyConfig)) {
+            throw new InvalidConfigurationException('Config data is not an instance of MiraklConfig');
+        }
+
+        try {
+            $etsyClient = new EtsyClient($configData);
+            $response = $etsyClient->get('/api/offers'); // TODO: change to correct endpoint
+
+            return !empty($response);
+        } catch (Exception $e) {
+            return false;
+        }
     }
 
     /**

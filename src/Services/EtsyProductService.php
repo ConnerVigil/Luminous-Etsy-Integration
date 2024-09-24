@@ -56,9 +56,9 @@ class EtsyProductService implements OMSProductInterface
             'max' => 100, // Adjust this to the maximum number of items per page, e.g., 100
             'offset' => 0
         ];
-        $endpoint = '/api/offers';
-        $etsyClient = new EtsyClient($this->config);
 
+        $endpoint = '/api/offers'; // TODO: change to correct endpoint
+        $etsyClient = new EtsyClient($this->config);
         $allProducts = [];
 
         try {

@@ -8,6 +8,4 @@ class EtsyConfig implements BaseConfigData
 {
     public string $keyString;
     public string $baseUrl;
-    public string $callbackUrl;
-    public string $stateString;
 }
