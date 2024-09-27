@@ -11,7 +11,7 @@ use JoinLuminous\OmsContracts\Constants\IntegrationTypeConstant;
 use JoinLuminous\OmsContracts\Data\BaseConfigData;
 use JoinLuminous\OmsContracts\Data\Config\FieldConfigData;
 use JoinLuminous\OmsContracts\Constants\FormElementConstant;
-
+use JoinLuminous\OmsContracts\Constants\IntegrationAuthTypeConstant;
 
 class EtsyAppIntegrationAcountService implements OMSAppIntegrationAccountInterface
 {
@@ -36,7 +36,7 @@ class EtsyAppIntegrationAcountService implements OMSAppIntegrationAccountInterfa
      */
     public function getAuthType(): string
     {
-        return IntegrationTypeConstant::BASIC_AUTH; // TODO: double check which type this is
+        return IntegrationAuthTypeConstant::API_TOKEN;
     }
 
     /**
@@ -44,7 +44,10 @@ class EtsyAppIntegrationAcountService implements OMSAppIntegrationAccountInterfa
      */
     public function createConfig(array $credentials): BaseConfigData
     {
-        return new EtsyConfig($credentials); // TODO: specify parameters explicitly
+        return new EtsyConfig(
+            keyString: $credentials['keyString'],
+            baseUrl: $credentials['baseUrl']
+        );
     }
 
     /**
@@ -54,8 +57,8 @@ class EtsyAppIntegrationAcountService implements OMSAppIntegrationAccountInterfa
     {
         return [
             'credentials' => [
-                'shop_key' => 'required|string',
-                'base_url' => 'required|string',
+                'keyString' => 'required|string',
+                'baseUrl' => 'required|string',
             ],
             'settings' => [
                 'get_products' => 'boolean'
@@ -70,13 +73,13 @@ class EtsyAppIntegrationAcountService implements OMSAppIntegrationAccountInterfa
     {
         return [
             'credentials' => [
-                'shop_key' => new FieldConfigData(
+                'keyString' => new FieldConfigData(
                     type: FormElementConstant::INPUT_TEXT,
                     label: 'Shop Key',
                     values: [],
                     attributes: []
                 ),
-                'base_url' => new FieldConfigData(
+                'baseUrl' => new FieldConfigData(
                     type: FormElementConstant::INPUT_TEXT,
                     label: 'Base URL',
                     values: [],
@@ -113,8 +116,7 @@ class EtsyAppIntegrationAcountService implements OMSAppIntegrationAccountInterfa
 
         try {
             $etsyClient = new EtsyClient($configData);
-            $response = $etsyClient->get('/api/offers'); // TODO: change to correct endpoint
-
+            $response = $etsyClient->get('/v3/application/openapi-ping');
             return !empty($response);
         } catch (Exception $e) {
             return false;

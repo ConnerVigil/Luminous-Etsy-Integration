@@ -28,7 +28,7 @@ class EtsyProductService implements OMSProductInterface
     {
         $this->appIntegrationAccountData = $appIntegrationAccountData;
         $this->config = new EtsyConfig(
-            shopKey: $appIntegrationAccountData->credentials['shop_key'],
+            keyString: $appIntegrationAccountData->credentials['shop_key'],
             baseUrl: $appIntegrationAccountData->credentials['base_url'],
         );
     }

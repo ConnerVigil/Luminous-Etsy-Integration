@@ -5,6 +5,8 @@ namespace JoinLuminous\EtsyOms\Tests;
 use JoinLuminous\EtsyOms\config\EtsyConfig;
 use JoinLuminous\EtsyOms\Services\EtsyAppIntegrationAcountService;
 use JoinLuminous\OmsContracts\Data\BaseConfigData;
+use JoinLuminous\OmsContracts\Data\Config\FieldConfigData;
+use JoinLuminous\OmsContracts\Constants\FormElementConstant;
 use JoinLuminous\OmsContracts\Exceptions\InvalidConfigurationException;
 use PHPUnit\Framework\TestCase;
 
@@ -14,22 +16,21 @@ class EtsyAppIntegrationAccountTest extends TestCase
     public function testGetAuthType()
     {
         $service = new EtsyAppIntegrationAcountService();
-        $this->assertEquals('BASIC_AUTH', $service->getAuthType());
+        $this->assertEquals('API_TOKEN', $service->getAuthType());
     }
 
     public function testCreateConfig()
     {
         $service = new EtsyAppIntegrationAcountService();
         $credentials = [
-            'shop_key' => 'test_shop_key',
-            'base_url' => 'test_base_url',
+            'keyString' => 'test_key_string',
+            'baseUrl' => 'test_base_url',
         ];
 
         /** @var EtsyConfig $config */
         $config = $service->createConfig($credentials);
-
         $this->assertInstanceOf(EtsyConfig::class, $config);
-        $this->assertEquals('test_shop_key', $config->keyString);
+        $this->assertEquals('test_key_string', $config->keyString);
         $this->assertEquals('test_base_url', $config->baseUrl);
     }
 
@@ -39,8 +40,13 @@ class EtsyAppIntegrationAccountTest extends TestCase
         $rules = $service->getRules();
 
         $expectedRules = [
-            'shop_key' => 'required|string',
-            'base_url' => 'required|string'
+            'credentials' => [
+                'keyString' => 'required|string',
+                'baseUrl' => 'required|string',
+            ],
+            'settings' => [
+                'get_products' => 'boolean'
+            ]
         ];
 
         $this->assertEquals($expectedRules, $rules);
@@ -49,8 +55,8 @@ class EtsyAppIntegrationAccountTest extends TestCase
     public function testTestCredentials()
     {
         $configData = [
-            'shop_key' => '', // TODO: add correct shop key
-            'base_url' => '', // TODO: add correct base url
+            'keyString' => 'tfw5y7zwuu6z7tiwf80qdvqt',
+            'baseUrl' => 'https://openapi.etsy.com',
         ];
 
         $service = new EtsyAppIntegrationAcountService();
@@ -62,10 +68,8 @@ class EtsyAppIntegrationAccountTest extends TestCase
     public function testTestCredentialsWithInvalidConfig()
     {
         $this->expectException(InvalidConfigurationException::class);
-
         $service = new EtsyAppIntegrationAcountService();
         $invalidConfigData = $this->createMock(BaseConfigData::class);
-
         $service->testCredentials($invalidConfigData);
     }
 
@@ -78,7 +82,7 @@ class EtsyAppIntegrationAccountTest extends TestCase
     public function testGetIntegrationType()
     {
         $service = new EtsyAppIntegrationAcountService();
-        $this->assertEquals('basic_auth', $service->getIntegrationType());
+        $this->assertEquals('OAUTH', $service->getIntegrationType());
     }
 
     public function testGetFields()
@@ -88,23 +92,26 @@ class EtsyAppIntegrationAccountTest extends TestCase
 
         $expectedFields = [
             'credentials' => [
-                'shop_key' => [
-                    'type' => 'input_text',
-                    'values' => [],
-                    'attributes' => []
-                ],
-                'base_url' => [
-                    'type' => 'input_text',
-                    'values' => [],
-                    'attributes' => []
-                ]
+                'keyString' => new FieldConfigData(
+                    type: FormElementConstant::INPUT_TEXT,
+                    label: 'Shop Key',
+                    values: [],
+                    attributes: []
+                ),
+                'baseUrl' => new FieldConfigData(
+                    type: FormElementConstant::INPUT_TEXT,
+                    label: 'Base URL',
+                    values: [],
+                    attributes: []
+                )
             ],
             'settings' => [
-                'get_products' => [
-                    'type' => 'checkbox',
-                    'values' => [],
-                    'attributes' => []
-                ]
+                'get_products' => new FieldConfigData(
+                    type: FormElementConstant::CHECKBOX,
+                    label: 'Get Products',
+                    values: [],
+                    attributes: []
+                )
             ]
         ];
 
@@ -115,9 +122,7 @@ class EtsyAppIntegrationAccountTest extends TestCase
     {
         $service = new EtsyAppIntegrationAcountService();
         $actions = $service->getActions();
-
         $expectedActions = [];
-
         $this->assertEquals($expectedActions, $actions);
     }
 

@@ -21,7 +21,19 @@ class EtsyClient
 
     public function __construct(EtsyConfig $config)
     {
-        $this->client = new Client(); // TODO: Configure whatever is needed to use call the etsy api
+        $keyString = $config->keyString;
+        $baseUrl = $config->baseUrl;
+
+        $headers = [
+            'x-api-key' => $keyString,
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json'
+        ];
+
+        $this->client = new Client([
+            'base_uri' => $baseUrl,
+            'headers' => $headers
+        ]);
     }
 
     /**

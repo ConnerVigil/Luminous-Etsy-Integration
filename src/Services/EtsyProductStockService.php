@@ -23,7 +23,7 @@ class EtsyProductStockService implements OMSProductStockInterface
     public function __construct(AppIntegrationAccountData $appIntegrationAccountData)
     {
         $config = new EtsyConfig(
-            shopKey: $appIntegrationAccountData->credentials['shop_key'],
+            keyString: $appIntegrationAccountData->credentials['shop_key'],
             baseUrl: $appIntegrationAccountData->credentials['base_url'],
         );
         $this->etsyClient = new EtsyClient($config);

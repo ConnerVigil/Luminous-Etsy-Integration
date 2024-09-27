@@ -13,8 +13,8 @@ class EtsyProductTest extends TestCase
     public function testGetAppIntegrationAccountData()
     {
         $configData = [
-            'shopKey' => '', // TODO: add correct shop key
-            'baseUrl' => '', // TODO: add correct base url
+            'keyString' => 'tfw5y7zwuu6z7tiwf80qdvqt',
+            'baseUrl' => 'https://openapi.etsy.com',
         ];
 
         $appIntegrationAccountData = new AppIntegrationAccountData([
@@ -32,8 +32,8 @@ class EtsyProductTest extends TestCase
     public function testGetPaginatedProducts()
     {
         $configData = [
-            'shopKey' => '', // TODO: add correct shop key
-            'baseUrl' => '', // TODO: add correct base url
+            'keyString' => 'tfw5y7zwuu6z7tiwf80qdvqt',
+            'baseUrl' => 'https://openapi.etsy.com',
         ];
 
         $appIntegrationAccountData = new AppIntegrationAccountData([
