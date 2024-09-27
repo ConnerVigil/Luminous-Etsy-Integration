@@ -25,7 +25,6 @@ class EtsyProductStockTest extends TestCase
         ]);
 
         $etsyProductStockService = new EtsyProductStockService($appIntegrationAccountData);
-
         $offer = $etsyProductStockService->getOffer('22251880');
 
         $productStockData = [
@@ -54,7 +53,6 @@ class EtsyProductStockTest extends TestCase
 
         $productStockData = (object) $productStockData;
         $productStockCollection = new ProductStockDataCollection(productStocks: [$productStockData]);
-
         $etsyProductStockService->pushStock($productStockCollection);
     }
 

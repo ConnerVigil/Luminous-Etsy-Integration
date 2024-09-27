@@ -28,8 +28,8 @@ class EtsyProductService implements OMSProductInterface
     {
         $this->appIntegrationAccountData = $appIntegrationAccountData;
         $this->config = new EtsyConfig(
-            keyString: $appIntegrationAccountData->credentials['shop_key'],
-            baseUrl: $appIntegrationAccountData->credentials['base_url'],
+            keyString: $appIntegrationAccountData->credentials['keyString'],
+            baseUrl: $appIntegrationAccountData->credentials['baseUrl'],
         );
     }
 
@@ -64,7 +64,6 @@ class EtsyProductService implements OMSProductInterface
         try {
             do {
                 $response = $etsyClient->get($endpoint, $params);
-
                 $products = $response['offers'] ?? [];
                 $allProducts = array_merge($allProducts, $products);
 

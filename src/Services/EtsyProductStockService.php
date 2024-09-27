@@ -23,8 +23,8 @@ class EtsyProductStockService implements OMSProductStockInterface
     public function __construct(AppIntegrationAccountData $appIntegrationAccountData)
     {
         $config = new EtsyConfig(
-            keyString: $appIntegrationAccountData->credentials['shop_key'],
-            baseUrl: $appIntegrationAccountData->credentials['base_url'],
+            keyString: $appIntegrationAccountData->credentials['keyString'],
+            baseUrl: $appIntegrationAccountData->credentials['baseUrl'],
         );
         $this->etsyClient = new EtsyClient($config);
     }
@@ -33,7 +33,6 @@ class EtsyProductStockService implements OMSProductStockInterface
     public function getOffer($offerId)
     {
         $endpoint = '/api/offers/' . $offerId;
-
         return $this->etsyClient->get($endpoint);
     }
 
