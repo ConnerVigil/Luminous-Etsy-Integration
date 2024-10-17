@@ -29,13 +29,6 @@ class EtsyProductStockService implements OMSProductStockInterface
         $this->etsyClient = new EtsyClient($config);
     }
 
-
-    public function getOffer($offerId)
-    {
-        $endpoint = '/api/offers/' . $offerId;
-        return $this->etsyClient->get($endpoint);
-    }
-
     /**
      * @inheritDoc
      * @throws InvalidConfigurationException

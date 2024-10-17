@@ -14,6 +14,7 @@ class EtsyProductStockTest extends TestCase
         $configData = [
             'keyString' => 'tfw5y7zwuu6z7tiwf80qdvqt',
             'baseUrl' => 'https://openapi.etsy.com',
+            'shopId' => '55051636',
         ];
 
         $appIntegrationAccountData = new AppIntegrationAccountData([

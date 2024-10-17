@@ -59,6 +59,7 @@ class EtsyAppIntegrationAcountService implements OMSAppIntegrationAccountInterfa
             'credentials' => [
                 'keyString' => 'required|string',
                 'baseUrl' => 'required|string',
+                'shopId' => 'required|string',
             ],
             'settings' => [
                 'get_products' => 'boolean'
@@ -82,6 +83,12 @@ class EtsyAppIntegrationAcountService implements OMSAppIntegrationAccountInterfa
                 'baseUrl' => new FieldConfigData(
                     type: FormElementConstant::INPUT_TEXT,
                     label: 'Base URL',
+                    values: [],
+                    attributes: []
+                ),
+                'shopId' => new FieldConfigData(
+                    type: FormElementConstant::INPUT_TEXT,
+                    label: 'Shop ID',
                     values: [],
                     attributes: []
                 )

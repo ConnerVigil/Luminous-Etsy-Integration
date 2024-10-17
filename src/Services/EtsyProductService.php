@@ -15,7 +15,6 @@ use JoinLuminous\OmsContracts\Interfaces\OMSProductInterface;
 
 class EtsyProductService implements OMSProductInterface
 {
-
     private AppIntegrationAccountData $appIntegrationAccountData;
     private EtsyConfig $config;
 
@@ -53,30 +52,33 @@ class EtsyProductService implements OMSProductInterface
     public function getPaginatedProducts(BaseParam $baseParam): ProductDataCollection
     {
         $params = [
-            'max' => 100, // Adjust this to the maximum number of items per page, e.g., 100
+            'limit' => 100,
             'offset' => 0
         ];
 
-        $endpoint = '/api/offers'; // TODO: change to correct endpoint
+        $accessToken = 'test'; // TODO: Figure out where to get the access token from
+
+        $shopId = $this->appIntegrationAccountData->credentials['shopId'];
+        $endpoint = "/v3/application/shops/$shopId/listings";
         $etsyClient = new EtsyClient($this->config);
-        $allProducts = [];
+        $allListings = [];
 
         try {
+            $headers = [
+                'x-api-key' => $this->config->keyString,
+                'Authorization' => "Bearer $accessToken",
+                'Content-Type' => 'application/json',
+            ];
+
             do {
-                $response = $etsyClient->get($endpoint, $params);
-                $products = $response['offers'] ?? [];
-                $allProducts = array_merge($allProducts, $products);
+                $response = $etsyClient->get($endpoint, $params, $headers);
+                $listings = $response['results'];
+                $allListings = array_merge($allListings, $listings);
+                $params['offset'] += $params['limit'];
+            } while ($response['count'] != 0);
 
-                // Update the offset for the next page
-                $params['offset'] += $params['max'];
-
-                // Check if we've fetched all products
-                $totalCount = $response['total_count'] ?? 0;
-            } while (count($allProducts) < $totalCount);
-
-            return EtsyApiResponseMapper::mapProductsToProductDataCollection($allProducts);
+            return EtsyApiResponseMapper::mapProductsToProductDataCollection($allListings);
         } catch (GuzzleException $e) {
-            Logger::error('Etsy getPaginatedProducts', ['errorMessage' => $e->getMessage()]);
             ExceptionHelper::throwExceptionFromStatusCode($e->getCode() ?? 0);
         }
     }

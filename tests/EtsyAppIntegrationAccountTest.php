@@ -43,6 +43,7 @@ class EtsyAppIntegrationAccountTest extends TestCase
             'credentials' => [
                 'keyString' => 'required|string',
                 'baseUrl' => 'required|string',
+                'shopId' => 'required|string',
             ],
             'settings' => [
                 'get_products' => 'boolean'
@@ -101,6 +102,12 @@ class EtsyAppIntegrationAccountTest extends TestCase
                 'baseUrl' => new FieldConfigData(
                     type: FormElementConstant::INPUT_TEXT,
                     label: 'Base URL',
+                    values: [],
+                    attributes: []
+                ),
+                'shopId' => new FieldConfigData(
+                    type: FormElementConstant::INPUT_TEXT,
+                    label: 'Shop ID',
                     values: [],
                     attributes: []
                 )

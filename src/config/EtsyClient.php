@@ -54,6 +54,7 @@ class EtsyClient
      *
      * @param string $endpoint
      * @param array $params
+     * @param array $headers
      * @param int $maxRetries
      *
      * @return mixed
@@ -62,14 +63,18 @@ class EtsyClient
      * @throws InvalidConfigurationException
      * @throws ResourceNotFoundException
      */
-    public function get(string $endpoint, array $params = [], int $maxRetries = 0): mixed
+    public function get(string $endpoint, array $params = [], array $headers = [], int $maxRetries = 0): mixed
     {
         try {
+            $options = [];
             if ($params) {
-                $response = $this->client->get($endpoint, ['query' => $params]);
-            } else {
-                $response = $this->client->get($endpoint);
+                $options['query'] = $params;
             }
+            if ($headers) {
+                $options['headers'] = $headers;
+            }
+
+            $response = $this->client->get($endpoint, $options);
 
             return json_decode($response->getBody()->getContents(), true);
         } catch (ClientException | ServerException | RequestException $e) {
@@ -77,8 +82,7 @@ class EtsyClient
 
             if ($statusCode === 429 && $maxRetries < 3) {
                 $this->sleepIfRateLimited($e->getResponse());
-
-                return $this->get($endpoint, $params, $maxRetries + 1);
+                return $this->get($endpoint, $params, $headers, $maxRetries + 1);
             }
 
             switch ($statusCode) {

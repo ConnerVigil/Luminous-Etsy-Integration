@@ -7,14 +7,16 @@ use JoinLuminous\OmsContracts\Data\AppIntegrationAccountData;
 use JoinLuminous\OmsContracts\Data\Params\BaseParam;
 use JoinLuminous\OmsContracts\Data\ProductDataCollection;
 use PHPUnit\Framework\TestCase;
+use JoinLuminous\OmsContracts\Helpers\Logger;
 
 class EtsyProductTest extends TestCase
 {
     public function testGetAppIntegrationAccountData()
     {
         $configData = [
-            'keyString' => 'tfw5y7zwuu6z7tiwf80qdvqt',
+            'keyString' => 'wdqtud5uqgl8b59v4vrkw5j5',
             'baseUrl' => 'https://openapi.etsy.com',
+            'shopId' => '55051636',
         ];
 
         $appIntegrationAccountData = new AppIntegrationAccountData([
@@ -32,8 +34,9 @@ class EtsyProductTest extends TestCase
     public function testGetPaginatedProducts()
     {
         $configData = [
-            'keyString' => 'tfw5y7zwuu6z7tiwf80qdvqt',
+            'keyString' => 'wdqtud5uqgl8b59v4vrkw5j5',
             'baseUrl' => 'https://openapi.etsy.com',
+            'shopId' => '55051636',
         ];
 
         $appIntegrationAccountData = new AppIntegrationAccountData([
@@ -49,7 +52,6 @@ class EtsyProductTest extends TestCase
 
         try {
             $productDataCollection = $etsyProductService->getPaginatedProducts($baseParam);
-
             $this->assertInstanceOf(ProductDataCollection::class, $productDataCollection);
         } catch (\Exception $e) {
             $this->fail('Exception thrown: ' . $e->getMessage());

@@ -12,34 +12,39 @@ use Spatie\DataTransferObject\Exceptions\UnknownProperties;
 class EtsyApiResponseMapper
 {
     /**
-     * @param array $products
+     * @param array $listings
      * @param string|null $nextPageToken
      *
      * @return ProductDataCollection
      * @throws UnknownProperties
      */
-    public static function mapProductsToProductDataCollection(array $products, ?string $nextPageToken = null): ProductDataCollection
+    public static function mapProductsToProductDataCollection(array $listings, ?string $nextPageToken = null): ProductDataCollection
     {
         $productDataArray = [];
 
-        // TODO: make sure that this is mapping correctly
-        foreach ($products as $product) {
-            $productDataArray[] = new ProductData(
-                productId: $product['offer_id'],
-                variantId: $product['offer_id'],
-                inventoryItemId: $product['offer_id'],
-                sku: $product['shop_sku'],
-                productName: $product['product_title'],
-                warehouseLocationId: null,
-                warehouseCustomerId: null,
-                currentInventory: $product['quantity'] ?? 0,
-                price: $product['price'],
-                remoteStatus: $product['active'] ? 'ACTIVE' : 'INACTIVE',
-                source: 'etsy',
-                modifyDate: DateHelper::toUTCCarbon(Carbon::now()),
-                createDate: DateHelper::toUTCCarbon(Carbon::now()),
-                unfulfillableInventory: BigDecimal::zero(),
-            );
+        foreach ($listings as $listing) {
+            $inventory = $listing['inventory']['products'] ?? [];
+
+            foreach ($inventory as $product) {
+                $offering = $product['offerings'][0] ?? null;
+
+                $productDataArray[] = new ProductData(
+                    productId: (string)$listing['listing_id'],
+                    variantId: (string)$product['product_id'],
+                    inventoryItemId: (string)$product['product_id'],
+                    sku: $product['sku'] ?? '',
+                    productName: $listing['title'],
+                    warehouseLocationId: null,
+                    warehouseCustomerId: null,
+                    currentInventory: $offering['quantity'] ?? 0,
+                    price: $offering['price']['amount'] ?? 0,
+                    remoteStatus: $listing['state'] === 'active' ? 'ACTIVE' : 'INACTIVE',
+                    source: 'etsy',
+                    modifyDate: DateHelper::toUTCCarbon(Carbon::createFromTimestamp($listing['last_modified_timestamp'])),
+                    createDate: DateHelper::toUTCCarbon(Carbon::createFromTimestamp($listing['creation_timestamp'])),
+                    unfulfillableInventory: BigDecimal::zero(),
+                );
+            }
         }
 
         return new ProductDataCollection(
