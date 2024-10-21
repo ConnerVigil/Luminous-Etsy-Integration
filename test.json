@@ -1,0 +1,26 @@
+{
+    "products": [
+        {
+            "sku": "string",
+            "property_values": [
+                {
+                    "property_id": 1,
+                    "value_ids": [1],
+                    "scale_id": 1,
+                    "property_name": "string",
+                    "values": ["string"]
+                }
+            ],
+            "offerings": [
+                {
+                    "price": 0,
+                    "quantity": 0,
+                    "is_enabled": true
+                }
+            ]
+        }
+    ],
+    "price_on_property": [0],
+    "quantity_on_property": [0],
+    "sku_on_property": [0]
+}

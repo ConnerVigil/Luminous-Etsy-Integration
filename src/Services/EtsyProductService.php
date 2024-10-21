@@ -56,22 +56,14 @@ class EtsyProductService implements OMSProductInterface
             'offset' => 0
         ];
 
-        $accessToken = 'test'; // TODO: Figure out where to get the access token from
-
         $shopId = $this->appIntegrationAccountData->credentials['shopId'];
         $endpoint = "/v3/application/shops/$shopId/listings";
         $etsyClient = new EtsyClient($this->config);
         $allListings = [];
 
         try {
-            $headers = [
-                'x-api-key' => $this->config->keyString,
-                'Authorization' => "Bearer $accessToken",
-                'Content-Type' => 'application/json',
-            ];
-
             do {
-                $response = $etsyClient->get($endpoint, $params, $headers);
+                $response = $etsyClient->get($endpoint, $params);
                 $listings = $response['results'];
                 $allListings = array_merge($allListings, $listings);
                 $params['offset'] += $params['limit'];

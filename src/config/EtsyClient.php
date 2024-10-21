@@ -24,8 +24,11 @@ class EtsyClient
         $keyString = $config->keyString;
         $baseUrl = $config->baseUrl;
 
+        $accessToken = "test"; // TODO: Manually setting the access token
+
         $headers = [
             'x-api-key' => $keyString,
+            'Authorization' => "Bearer $accessToken",
             'Content-Type' => 'application/json',
             'Accept' => 'application/json'
         ];
@@ -54,7 +57,6 @@ class EtsyClient
      *
      * @param string $endpoint
      * @param array $params
-     * @param array $headers
      * @param int $maxRetries
      *
      * @return mixed
@@ -63,15 +65,12 @@ class EtsyClient
      * @throws InvalidConfigurationException
      * @throws ResourceNotFoundException
      */
-    public function get(string $endpoint, array $params = [], array $headers = [], int $maxRetries = 0): mixed
+    public function get(string $endpoint, array $params = [], int $maxRetries = 0): mixed
     {
         try {
             $options = [];
             if ($params) {
                 $options['query'] = $params;
-            }
-            if ($headers) {
-                $options['headers'] = $headers;
             }
 
             $response = $this->client->get($endpoint, $options);
@@ -82,7 +81,7 @@ class EtsyClient
 
             if ($statusCode === 429 && $maxRetries < 3) {
                 $this->sleepIfRateLimited($e->getResponse());
-                return $this->get($endpoint, $params, $headers, $maxRetries + 1);
+                return $this->get($endpoint, $params, $maxRetries + 1);
             }
 
             switch ($statusCode) {

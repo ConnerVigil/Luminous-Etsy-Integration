@@ -39,11 +39,51 @@ class EtsyProductStockService implements OMSProductStockInterface
      */
     public function pushStock(ProductStockDataCollection $productStockDataCollection): array
     {
-        $response = []; // TODO: Implement pushStock
+        $response = [];
         $payload = [];
 
+        foreach ($productStockDataCollection->productStocks as $productStock) {
+            $listingId = $productStock->productId;
+
+            $inventoryData = [
+                'products' => [
+                    [
+                        'sku' => $productStock->internalSku,
+                        'offerings' => [
+                            [
+                                'quantity' => $productStock->availableQuantity->toInt(),
+                                'is_enabled' => true
+                            ]
+                        ]
+                    ]
+                ]
+            ];
+
+            $endpoint = "/v3/application/listings/{$listingId}/inventory";
+
+            try {
+                $apiResponse = $this->etsyClient->patch($endpoint, $inventoryData);
+
+                $response[] = [
+                    'productId' => $productStock->productId,
+                    'status' => 'success',
+                    'message' => 'Stock updated successfully',
+                    'data' => $apiResponse
+                ];
+
+                $payload[] = $inventoryData;
+            } catch (GuzzleException $e) {
+                $response[] = [
+                    'productId' => $productStock->productId,
+                    'status' => 'error',
+                    'message' => $e->getMessage()
+                ];
+                Logger::error('Error updating Etsy inventory', ['exception' => $e, 'productId' => $productStock->productId]);
+            }
+        }
+
         return [
-            'message' => 'Stocks successfully pushed to Etsy.',
+            'message' => 'Stock push to Etsy completed.',
             'responseData' => $response,
             'payload' => $payload
         ];
