@@ -56,7 +56,7 @@ class EtsyAppIntegrationAccountTest extends TestCase
     public function testTestCredentials()
     {
         $configData = [
-            'keyString' => 'tfw5y7zwuu6z7tiwf80qdvqt',
+            'keyString' => 'wdqtud5uqgl8b59v4vrkw5j5',
             'baseUrl' => 'https://openapi.etsy.com',
         ];
 

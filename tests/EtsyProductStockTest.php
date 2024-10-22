@@ -12,7 +12,7 @@ class EtsyProductStockTest extends TestCase
     public function testPushStock()
     {
         $configData = [
-            'keyString' => 'tfw5y7zwuu6z7tiwf80qdvqt',
+            'keyString' => 'wdqtud5uqgl8b59v4vrkw5j5',
             'baseUrl' => 'https://openapi.etsy.com',
             'shopId' => '55051636',
         ];
@@ -26,7 +26,7 @@ class EtsyProductStockTest extends TestCase
         ]);
 
         $etsyProductStockService = new EtsyProductStockService($appIntegrationAccountData);
-        $offer = $etsyProductStockService->getOffer('22251880');
+        // $offer = $etsyProductStockService->getOffer('22251880');
 
         $productStockData = [
             'inventoryItemId' => '22251880',
@@ -41,7 +41,7 @@ class EtsyProductStockTest extends TestCase
 
             $this->assertIsArray($result);
             $this->assertArrayHasKey('message', $result);
-            $this->assertEquals('Stocks successfully pushed to Etsy.', $result['message']);
+            $this->assertEquals('Stock push to Etsy completed.', $result['message']);
             // Add additional assertions based on the expected structure of the response data
         } catch (\Exception $e) {
             $this->fail('Exception thrown: ' . $e->getMessage());

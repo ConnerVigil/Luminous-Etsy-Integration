@@ -57,17 +57,20 @@ class EtsyProductService implements OMSProductInterface
         ];
 
         $shopId = $this->appIntegrationAccountData->credentials['shopId'];
-        $endpoint = "/v3/application/shops/$shopId/listings";
+        $endpoint = "/v3/application/shops/$shopId/listings?state=draft";
         $etsyClient = new EtsyClient($this->config);
         $allListings = [];
 
         try {
             do {
                 $response = $etsyClient->get($endpoint, $params);
+                print_r($response);
                 $listings = $response['results'];
                 $allListings = array_merge($allListings, $listings);
                 $params['offset'] += $params['limit'];
             } while ($response['count'] != 0);
+
+            print_r($allListings);
 
             return EtsyApiResponseMapper::mapProductsToProductDataCollection($allListings);
         } catch (GuzzleException $e) {

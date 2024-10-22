@@ -24,7 +24,7 @@ class EtsyClient
         $keyString = $config->keyString;
         $baseUrl = $config->baseUrl;
 
-        $accessToken = "test"; // TODO: Manually setting the access token
+        $accessToken = "77104793.19vpH5GE0YvUHGZSXVFSbSqOd06DLlUPL0VDBppL3QUeExgE05J21JVONxtOYla22OSTx09zfHNArXIx59a15NRP0pP"; // TODO: Manually setting the access token
 
         $headers = [
             'x-api-key' => $keyString,
