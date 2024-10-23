@@ -5,7 +5,9 @@ namespace JoinLuminous\EtsyOms\Tests;
 use JoinLuminous\EtsyOms\Services\EtsyProductStockService;
 use JoinLuminous\OmsContracts\Data\AppIntegrationAccountData;
 use JoinLuminous\OmsContracts\Data\ProductStockDataCollection;
+use JoinLuminous\OmsContracts\Data\ProductStockData;
 use PHPUnit\Framework\TestCase;
+use Brick\Math\BigDecimal;
 
 class EtsyProductStockTest extends TestCase
 {
@@ -26,14 +28,16 @@ class EtsyProductStockTest extends TestCase
         ]);
 
         $etsyProductStockService = new EtsyProductStockService($appIntegrationAccountData);
-        // $offer = $etsyProductStockService->getOffer('22251880');
 
-        $productStockData = [
-            'inventoryItemId' => '22251880',
-            'availableQuantity' => 1
-        ];
+        $listingId = '1813923221';
+        $result = $etsyProductStockService->getListing($listingId);
 
-        $productStockData = (object) $productStockData;
+        $productStockData = new ProductStockData([
+            'productId' => $result['products'][0]['product_id'],
+            'inventoryItemId' => $listingId,
+            'availableQuantity' => BigDecimal::of(10)
+        ]);
+
         $productStockCollection = new ProductStockDataCollection(productStocks: [$productStockData]);
 
         try {
@@ -47,16 +51,14 @@ class EtsyProductStockTest extends TestCase
             $this->fail('Exception thrown: ' . $e->getMessage());
         }
 
-        $productStockData = [
-            'inventoryItemId' => '22251880',
-            'availableQuantity' => $offer['quantity']
-        ];
+        $productStockData = new ProductStockData([
+            'inventoryItemId' => $listingId,
+            'availableQuantity' => BigDecimal::of($result['products'][0]['offerings'][0]['quantity'])
+        ]);
 
-        $productStockData = (object) $productStockData;
         $productStockCollection = new ProductStockDataCollection(productStocks: [$productStockData]);
         $etsyProductStockService->pushStock($productStockCollection);
     }
-
 
     protected function tearDown(): void
     {

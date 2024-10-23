@@ -9,6 +9,7 @@ use JoinLuminous\OmsContracts\Exceptions\InvalidConfigurationException;
 use JoinLuminous\OmsContracts\Interfaces\OMSAppIntegrationAccountInterface;
 use JoinLuminous\OmsContracts\Constants\IntegrationTypeConstant;
 use JoinLuminous\OmsContracts\Data\BaseConfigData;
+use JoinLuminous\OmsContracts\Helpers\Logger;
 use JoinLuminous\OmsContracts\Data\Config\FieldConfigData;
 use JoinLuminous\OmsContracts\Constants\FormElementConstant;
 use JoinLuminous\OmsContracts\Constants\IntegrationAuthTypeConstant;
@@ -126,6 +127,7 @@ class EtsyAppIntegrationAcountService implements OMSAppIntegrationAccountInterfa
             $response = $etsyClient->get('/v3/application/openapi-ping');
             return !empty($response);
         } catch (Exception $e) {
+            Logger::error('Etsy API test credentials error:', ['message' => $e->getMessage()]);
             return false;
         }
     }
